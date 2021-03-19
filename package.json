@@ -1,0 +1,25 @@
+{
+  "name": "administrative-platform-cai-api",
+  "version": "1.0.0",
+  "description": "API de plataforma administrativa para Independiente Futbol Club de Puntas de Valdez",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/Curbe8/administrative-platform-cai-api"
+  },
+  "author": "Leandro Curbelo",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "excel4node": "^1.7.2",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.7",
+    "uuid-token-generator": "^1.0.0"
+  }
+}
