@@ -14,3 +14,4 @@ Se listan las dependecias que se han instalado en el proyecto y su uso en el mis
 * [Token Generator](https://www.npmjs.com/package/uuid-token-generator) - Plugin que genera tokens basados en cierta base.
 * [Bcrypt.js](https://www.npmjs.com/package/bcryptjs) - Plugin que permite el manejo de contraseñas encriptadas.
 * [MySQL](https://www.npmjs.com/package/mysql) - Plugin que permite la conexion con la base de datos.
+* [Dotenv](https://www.npmjs.com/package/dotenv) - Plugin que permite manejar las variables del sistema desde un archivo .env
