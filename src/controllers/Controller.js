@@ -8,7 +8,7 @@ var Controller = class Controller {
 
     constructor() { }
     /**
-     * Funcion que retorna la respuesta.
+     * Función que retorna la respuesta.
      * 
      * @param {Response} oResponse Este objeto maneja el response de la solicitud.
      * @param {number} nStatusCode Codigo de estado de la solicud.
@@ -20,10 +20,20 @@ var Controller = class Controller {
     respond = (oResponse, nStatusCode, oData = null, oException = null) => {
         oResponse.status(nStatusCode);
         if (oData == null)
-            if (nStatusCode == NOT_FOUND)
-                oData = { message: oEnvironment.GENERAL_MESSAGE_NOT_FOUND };
-            else
-                oData = { message: oEnvironment.GENERAL_MESSAGE_ERROR };
+            switch (nStatusCode) {
+                case NOT_FOUND:
+                    oData = { message: oEnvironment.GENERAL_MESSAGE_NOT_FOUND };
+                    break;
+                case NOT_VALID:
+                    oData = { message: oEnvironment.GENERAL_MESSAGE_NOT_VALID };
+                    break;
+                case PERMISSIONS:
+                    oData = { message: oEnvironment.GENERAL_MESSAGE_UNAUTHORIZED };
+                    break;
+                default:
+                    oData = { message: oEnvironment.GENERAL_MESSAGE_ERROR };
+                    break;
+            }
         if (oEnvironment.DEBUG && oException !== null)
             oData['debug'] = oException;
         oResponse.json(oData);
