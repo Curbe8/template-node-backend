@@ -1,42 +1,36 @@
-const oEnvironment = require('../constants/Environment.js');
-var oMySQL = require('mysql');
+const ConnectionDB = require("./ConnectionDB");
+
+/**
+ * Instancia de conexion a la base de datos, se maneja como Singleton para hacer posible el manejo
+ *  de transacciones sobre la base de datos por diferentes modelos.
+ */
+const oConnectionDB = (new ConnectionDB()).getInstance();
+
 /**
  * Modelo principal el cual extenderan los demas modelos y contendra funciones en comun.
  */
 var Model = class Model {
 
-    constructor(sTable, sDeleteSentence = '', sMinimalColumns = '*') {
+    constructor(sTable, sDeleteSentence = '', sAllColumns = '*', sMinimalColumns = sAllColumns) {
         this.sTable = sTable;
         this.sDeleteSentence = sDeleteSentence;
+        this.sAllColumns = sAllColumns;
         this.sMinimalColumns = sMinimalColumns;
-        this.getConnection();
+        this.oConnection = oConnectionDB;
     }
     /**
-     * Funcion principal para tomar e instanciar de forma singleton la conexion a la base de datos.
+     * Funcion común para todos los modelos, retorna el contador de registros actuales activos.
+     * 
+     * @param {function} fCallBack Funcion que sera llamada como callback, debe recibir un oResult y un bIsError (oResult, bIsError = false)
      * 
      * @author Leandro Curbelo
      */
-    getConnection = () => {
-        if (!this.oConnection) {
-            this.oConnection = oMySQL.createConnection({
-                host: oEnvironment.DB_HOST,
-                user: oEnvironment.DB_USER,
-                password: oEnvironment.DB_PASSWORD,
-                database: oEnvironment.DB_NAME,
-                port: oEnvironment.DB_PORT,
-                charset: oEnvironment.DB_CHARSET,
-            });
-        }
-        this.oConnection.config.queryFormat = function (oQuery, oValues) {
-            if (!oValues) return oQuery;
-            return oQuery.replace(/\:(\w+)/g, function (sTxt, sKey) {
-                if (oValues.hasOwnProperty(sKey)) {
-                    let sValue = oValues[sKey] !== '' ? oValues[sKey] : null;
-                    return this.escape(sValue);
-                }
-                return sTxt;
-            }.bind(this));
-        };
+    getCount = (fCallBack) => {
+        oConnectionDB.query(`SELECT COUNT(id) AS count FROM ${this.sTable} WHERE 1 ${this.sDeleteSentence}`, (oError, oResult) => {
+            if (oError)
+                return fCallBack(oError, true);
+            fCallBack(oResult[0]);
+        });
     }
     /**
      * Funcion común para todos los modelos, retorna todos los registros de la tabla.
@@ -46,11 +40,10 @@ var Model = class Model {
      * @author Leandro Curbelo
      */
     getAll = (fCallBack) => {
-        this.oConnection.query(`SELECT ${this.sMinimalColumns} FROM ${this.sTable} WHERE 1 ${this.sDeleteSentence} ORDER BY name`, (oError, oResult) => {
+        oConnectionDB.query(`SELECT ${this.sMinimalColumns} FROM ${this.sTable} WHERE 1 ${this.sDeleteSentence} ORDER BY name`, (oError, oResult) => {
             if (oError)
-                fCallBack(oError, true);
-            else
-                fCallBack(oResult);
+                return fCallBack(oError, true);
+            fCallBack(oResult);
         });
     }
     /**
@@ -62,11 +55,10 @@ var Model = class Model {
      * @author Leandro Curbelo
      */
     find = (nId, fCallBack) => {
-        this.oConnection.query(`SELECT ${this.sMinimalColumns} FROM ${this.sTable} WHERE id = ${this.oConnection.escape(nId)} ${this.sDeleteSentence}`, (oError, oResult) => {
+        oConnectionDB.query(`SELECT ${this.sMinimalColumns} FROM ${this.sTable} WHERE id = ${oConnectionDB.escape(nId)} ${this.sDeleteSentence}`, (oError, oResult) => {
             if (oError)
-                fCallBack(oError, true);
-            else
-                fCallBack(oResult[0]);
+                return fCallBack(oError, true);
+            fCallBack(oResult[0]);
         });
     }
     /**
@@ -79,12 +71,64 @@ var Model = class Model {
      * @author Leandro Curbelo
      */
     remove = (nId, dNow, fCallBack) => {
-        this.oConnection.query(`UPDATE ${this.sTable} SET deleted_at = ${this.oConnection.escape(dNow)} WHERE id = ${this.oConnection.escape(nId)}`, (oError, oResult) => {
+        oConnectionDB.query(`UPDATE ${this.sTable} SET deleted_at = ${oConnectionDB.escape(dNow)} WHERE id = ${oConnectionDB.escape(nId)}`, (oError, oResult) => {
             if (oError)
-                fCallBack(oError, true);
-            else
-                fCallBack(oResult[0]);
+                return fCallBack(oError, true);
+            fCallBack(oResult[0]);
         });
+    }
+    /**
+     * Funcion que elimina un registro fisicamente.
+     * 
+     * @param {number} nId Identificador tomado de instagram
+     * 
+     * @author Leandro Curbelo
+     */
+    delete = (nId) => {
+        oConnectionDB.query(`DELETE FROM ${this.sTable} WHERE id = ${oConnectionDB.escape(nId)}`, (oError, oResult) => { });
+    }
+    /**
+     * Funcion global para todos los modelos, esta funcion permite la edicion de un registro
+     *
+     * @param {object} oModel Datos que se deben actualizar en el modelo
+     * 
+     * @author Leandro Curbelo
+     */
+    update = async (oModel, fCallBack) => {
+        try {
+            let sSql = `UPDATE ${this.sTable} SET ${oConnectionDB.escape(oModel)} WHERE id = ${oConnectionDB.escape(oModel.id)}`;
+            oConnectionDB.query(sSql, (oError, oResult) => {
+                if (oError)
+                    return fCallBack(oError.message, true);
+                fCallBack();
+            });
+        } catch (oError) {
+            fCallBack(oError.message, true);
+        }
+    }
+    /**
+     * Funcion que comienza una transaccion en la base de datos
+     * 
+     * @author Leandro Curbelo
+     */
+    beginTransaction = () => {
+        oConnectionDB.beginTransaction();
+    }
+    /**
+     * Funcion que realiza el commit de una transaccion
+     * 
+     * @author Leandro Curbelo
+     */
+    commitTransaction = () => {
+        oConnectionDB.commit();
+    }
+    /**
+     * Funcion que realiza el rollback de una transaccion
+     * 
+     * @author Leandro Curbelo
+     */
+    rollbackTransaction = () => {
+        oConnectionDB.rollback()
     }
 }
 

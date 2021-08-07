@@ -3,7 +3,7 @@ POST http://localhost:3000/admin/login
 content-type: application/json
 
 {
-    "email": "l_curbe@hotmail.com",
+    "email": "test@test.com",
     "password": "123"
 }
 

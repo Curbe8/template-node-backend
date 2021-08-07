@@ -126,7 +126,7 @@ var UserController = class UserController extends Controller {
 }
 
 /*
-    ! COMENTARIO PARA ELIMINAR - Fragmento de codigo que genera clave
+    ! COMENTARIO DE AYUDA - Fragmento de codigo que genera clave
     bcryptjs.genSalt(10, (err, salt)  => {
         bcryptjs.hash('123', salt, (err, hash) =>  {
             this.respond(oResponse, DONE, hash);

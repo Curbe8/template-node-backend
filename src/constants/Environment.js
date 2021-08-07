@@ -14,7 +14,8 @@ module.exports = {
     DB_HOST: LOCAL_ENVIRONMENT ? 'localhost' : 'localhost',
     DB_PORT: 3306,
     DB_CHARSET: 'utf8mb4_general_ci',
+    DB_UTC: 'UTC',
 
-    GENERAL_MESSAGE_ERROR: 'Ah ocurrido un error, por favor intente de nuevo mas tarde.',
+    GENERAL_MESSAGE_ERROR: 'Ah ocurrido un error, por favor intente de nuevo más tarde.',
     GENERAL_MESSAGE_NOT_FOUND: 'No se encontro registro con ese identificador',
 };

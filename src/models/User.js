@@ -3,11 +3,12 @@ const Model = require('./Model');
 const TABLE_NAME = 'users';
 const DELETE_SENTENCE = 'AND deleted_at IS NULL';
 const MINIMAL_COLUMNS = 'id, name, lastname, email, password, remember_token';
+const ALL_COLUMNS = 'id, name, lastname, email, password, remember_token, updated_at, created_at, deleted_at';
 
 var User = class User extends Model {
 
     constructor() {
-        super(TABLE_NAME, DELETE_SENTENCE, MINIMAL_COLUMNS);
+        super(TABLE_NAME, DELETE_SENTENCE, ALL_COLUMNS, MINIMAL_COLUMNS);
     }
     /**
      * Funcion que busca un usuario teniendo en cuenta el email que recibe por parametro.
@@ -24,9 +25,8 @@ var User = class User extends Model {
             let sSql = `SELECT ${MINIMAL_COLUMNS} FROM ${TABLE_NAME} WHERE email = ${this.oConnection.escape(sEmail)} ${DELETE_SENTENCE}`;
             this.oConnection.query(sSql, (oError, oResult) => {
                 if (oError)
-                    fCallBack(oError.message, true);
-                else
-                    fCallBack(oResult[0]);
+                    return fCallBack(oError.message, true);
+                fCallBack(oResult[0]);
             });
         } catch (oError) {
             fCallBack(oError.message, true);
@@ -47,9 +47,8 @@ var User = class User extends Model {
             let sSql = `SELECT ${MINIMAL_COLUMNS} FROM ${TABLE_NAME} WHERE remember_token = ${this.oConnection.escape(sToken)} ${DELETE_SENTENCE}`;
             this.oConnection.query(sSql, (oError, oResult) => {
                 if (oError)
-                    fCallBack(oError.message, true);
-                else
-                    fCallBack(oResult[0]);
+                    return fCallBack(oError.message, true);
+                fCallBack(oResult[0]);
             });
         } catch (oError) {
             fCallBack(oError.message, true);
@@ -69,9 +68,8 @@ var User = class User extends Model {
             let sSql = `UPDATE ${TABLE_NAME} SET remember_token = ${this.oConnection.escape(sToken)} WHERE email = ${this.oConnection.escape(sEmail)}`;
             this.oConnection.query(sSql, (oError, oResult) => {
                 if (oError)
-                    fCallBack(oError.message);
-                else
-                    fCallBack();
+                    return fCallBack(oError.message);
+                fCallBack();
             });
         } catch (oError) {
             fCallBack(oError.message, true);
