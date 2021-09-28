@@ -11,10 +11,10 @@ var User = class User extends Model {
         super(TABLE_NAME, DELETE_SENTENCE, ALL_COLUMNS, MINIMAL_COLUMNS);
     }
     /**
-     * Funcion que busca un usuario teniendo en cuenta el email que recibe por parametro.
+     * Función que busca un usuario teniendo en cuenta el email que recibe por parámetro.
      * 
      * @param {string} sEmail Email por el que se desea filtrar al usuario
-     * @param {function} fCallBack Funcion que realiza el callback luego de procesar la busqueda del usuario
+     * @param {function} fCallBack Función que realiza el callback luego de procesar la busqueda del usuario
      * 
      * @return {User | string}
      * 
@@ -33,10 +33,10 @@ var User = class User extends Model {
         }
     }
     /**
-     * Funcion que busca un registro de usuario teniendo en cuenta el token de autenticacion
+     * Función que busca un registro de usuario teniendo en cuenta el token de autenticación
      * 
      * @param {string} sToken Token por el cual se buscara al usuario
-     * @param {function} fCallBack Funcion que realiza el callback luego de procesar la busqueda del usuario
+     * @param {function} fCallBack Función que realiza el callback luego de procesar la busqueda del usuario
      * 
      * @return {User | string}
      * 
@@ -55,11 +55,11 @@ var User = class User extends Model {
         }
     }
     /**
-     * Funcion que actualiza el token de un usaurio con el email sEmail.
+     * Función que actualiza el token de un usaurio con el email sEmail.
      * 
      * @param {string} sEmail Email del usuario al que se quiere modificar
      * @param {string} sToken Token de autenticacion que sera actualizado
-     * @param {function} fCallBack Funcion a la cual se llamara una ves de terminar el proceso
+     * @param {function} fCallBack Función a la cual se llamara una ves de terminar el proceso
      * 
      * @author Leandro Curbelo
      */

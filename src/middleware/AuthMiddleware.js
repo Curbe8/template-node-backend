@@ -2,6 +2,9 @@ const { PERMISSIONS } = require('../constants/StatusCode.js');
 const UserController = require('../controllers/UserController.js');
 const Controller = new UserController();
 
+/**
+ * Middleware encargado de la autenticación y permisos sobre cada ruta del sistema
+ */
 module.exports = AuthMiddleware = (oRequest, oResponse, oNext) => {
     let sToken = oRequest.headers.authorization;
     try {

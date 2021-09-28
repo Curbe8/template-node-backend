@@ -7,7 +7,7 @@ const ConnectionDB = require("./ConnectionDB");
 const oConnectionDB = (new ConnectionDB()).getInstance();
 
 /**
- * Modelo principal el cual extenderan los demas modelos y contendra funciones en comun.
+ * Modelo principal el cual extenderan los demas modelos y contendra funciónes en comun.
  */
 var Model = class Model {
 
@@ -19,9 +19,9 @@ var Model = class Model {
         this.oConnection = oConnectionDB;
     }
     /**
-     * Funcion común para todos los modelos, retorna el contador de registros actuales activos.
+     * Función común para todos los modelos, retorna el contador de registros actuales activos.
      * 
-     * @param {function} fCallBack Funcion que sera llamada como callback, debe recibir un oResult y un bIsError (oResult, bIsError = false)
+     * @param {function} fCallBack Función que sera llamada como callback, debe recibir un oResult y un bIsError (oResult, bIsError = false)
      * 
      * @author Leandro Curbelo
      */
@@ -33,9 +33,9 @@ var Model = class Model {
         });
     }
     /**
-     * Funcion común para todos los modelos, retorna todos los registros de la tabla.
+     * Función común para todos los modelos, retorna todos los registros de la tabla.
      * 
-     * @param {function} fCallBack Funcion que sera llamada como callback, debe recibir un oResult y un bIsError (oResult, bIsError = false)
+     * @param {function} fCallBack Función que sera llamada como callback, debe recibir un oResult y un bIsError (oResult, bIsError = false)
      * 
      * @author Leandro Curbelo
      */
@@ -47,10 +47,10 @@ var Model = class Model {
         });
     }
     /**
-     * Funcion común para todos los modelos, busca un registro por el identificador primario de la tabla.
+     * Función común para todos los modelos, busca un registro por el identificador primario de la tabla.
      * 
      * @param {number} nId Identificador primario del registro
-     * @param {function} fCallBack Funcion que sera llamada como callback, debe recibir un oResult y un bIsError (oResult, bIsError = false)
+     * @param {function} fCallBack Función que sera llamada como callback, debe recibir un oResult y un bIsError (oResult, bIsError = false)
      * 
      * @author Leandro Curbelo
      */
@@ -62,11 +62,11 @@ var Model = class Model {
         });
     }
     /**
-     * Funcion que remueve un registro de la base de la tabla instagram
+     * Función que realiza el borrado logico de un registro con el identificador nId
      * 
-     * @param {number} nId Identificador tomado de instagram
+     * @param {number} nId Identificador primario del registro
      * @param {Date} dNow Fecha del momento en que el registro se elimina
-     * @param {function} fCallBack Funcion que sera llamada como callback, debe recibir un oResult y un bIsError (oResult, bIsError = false)
+     * @param {function} fCallBack Función que sera llamada como callback, debe recibir un oResult y un bIsError (oResult, bIsError = false)
      * 
      * @author Leandro Curbelo
      */
@@ -78,9 +78,9 @@ var Model = class Model {
         });
     }
     /**
-     * Funcion que elimina un registro fisicamente.
+     * Función que elimina un registro fisicamente.
      * 
-     * @param {number} nId Identificador tomado de instagram
+     * @param {number} nId Identificador primario del registro
      * 
      * @author Leandro Curbelo
      */
@@ -88,7 +88,7 @@ var Model = class Model {
         oConnectionDB.query(`DELETE FROM ${this.sTable} WHERE id = ${oConnectionDB.escape(nId)}`, (oError, oResult) => { });
     }
     /**
-     * Funcion global para todos los modelos, esta funcion permite la edicion de un registro
+     * Función global para todos los modelos, esta función permite la edicion de un registro
      *
      * @param {object} oModel Datos que se deben actualizar en el modelo
      * 
@@ -107,7 +107,7 @@ var Model = class Model {
         }
     }
     /**
-     * Funcion que comienza una transaccion en la base de datos
+     * Función que comienza una transaccion en la base de datos
      * 
      * @author Leandro Curbelo
      */
@@ -115,7 +115,7 @@ var Model = class Model {
         oConnectionDB.beginTransaction();
     }
     /**
-     * Funcion que realiza el commit de una transaccion
+     * Función que realiza el commit de una transaccion
      * 
      * @author Leandro Curbelo
      */
@@ -123,7 +123,7 @@ var Model = class Model {
         oConnectionDB.commit();
     }
     /**
-     * Funcion que realiza el rollback de una transaccion
+     * Función que realiza el rollback de una transaccion
      * 
      * @author Leandro Curbelo
      */

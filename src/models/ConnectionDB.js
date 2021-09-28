@@ -34,7 +34,7 @@ class ConnectionDB {
         }
     }
     /**
-     * Esta funcion retorna la instancia de la conexion a la base de datos.
+     * Esta función retorna la instancia de la conexion a la base de datos.
      * 
      * @returns {oMySQL.ConnectionConfig}
      * 

@@ -10,13 +10,13 @@ var Log = class Log extends Model {
         super(TABLE_NAME);
     }
     /**
-     * Funcion que inserta un nuevo registro de log.
+     * Función que inserta un nuevo registro de log.
      * 
      * @param {number} nType Tipo de registro, indica cual pagina se intentaba scrapear
      * @param {string} sMessage Mensaje que brinda informacion del lugar donde surguio el problema
      * @param {object} oException Objeto error
      * @param {string} sArchive Nombre del archivo en el cual surge el problema
-     * @param {string} sFunction Nombre de la funcion donde se obtiene el problema
+     * @param {string} sFunction Nombre de la función donde se obtiene el problema
      * 
      * @author Leandro Curbelo
      */

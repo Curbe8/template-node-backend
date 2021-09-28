@@ -84,7 +84,7 @@ var UserController = class UserController extends Controller {
         }
     }
     /**
-     * Funcion encargada de chequear que el token de usuario este vigente, si lo esta actualiza el token y retorna el usuario
+     * Funcion de logout, se obtiene el usuario y se eliminan las credenciales de acceso al sistema
      * 
      * @param {Request} oRequest Request de la peticion, aqui se reciben las credenciales del usuario
      * @param {Response} oResponse Este objeto maneja el response de la solicitud

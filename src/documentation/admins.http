@@ -1,4 +1,4 @@
-### Funcion que inicia sesion, recibe un parametro email y un password
+### Función que inicia sesión, recibe un parametro email y un password
 POST http://localhost:3000/admin/login
 content-type: application/json
 
@@ -7,11 +7,11 @@ content-type: application/json
     "password": "123"
 }
 
-### Funcion que cierra sesion y elimina el token del usuario. recibe el token por header
+### Función que cierra sesión y elimina el token del usuario. recibe el token por header
 GET http://localhost:3000/admin/logout
 Authorization: b1056d1769a940a9acacfc622a72f92e0a861da2bb55438db495b48374c5376b
 
-### Funcion que cierra sesion y elimina el token del usuario. recibe el token por header
+### Función que actualiza el token de usuario y deja obsoleta las anteriores credenciales
 GET http://localhost:3000/admin/token
 Authorization: ce3714b71cef4a2faa24c82d60c95bd6039e64f31c6e435fad9cbb019085a536
 
