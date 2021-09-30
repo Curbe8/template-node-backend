@@ -1,5 +1,5 @@
 const oEnvironment = require('../constants/Environment.js');
-const { NOT_FOUND } = require('../constants/StatusCode.js');
+const { NOT_FOUND, NOT_VALID, PERMISSIONS } = require('../constants/StatusCode.js');
 const Log = require('../models/Log');
 
 const LogModel = new Log();
