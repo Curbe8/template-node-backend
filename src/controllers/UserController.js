@@ -19,46 +19,38 @@ var UserController = class UserController extends Controller {
     }
 
     /**
-     * Funcion de login, se toman los datos del usuario, se comprueba que los mismos sean correctos y se genera una nueva api token.
+     * Función de login, se toman los datos del usuario, se comprueba que los mismos sean correctos y se genera una nueva api token.
      * 
      * @param {Request} oRequest Request de la peticion, aqui se reciben las credenciales del usuario
      * @param {Response} oResponse Este objeto maneja el response de la solicitud
      * 
      * @author Leandro Curbelo
      */
-    login = async (oRequest, oResponse) => {
+     login = async (oRequest, oResponse) => {
         try {
             let sEmail = oRequest.body.email, sPassword = oRequest.body.password;
-            if (sEmail && sPassword) {
-                Model.getByEmail(sEmail, async (oUser, bIsError = false) => {
-                    if (!bIsError) {
-                        if (oUser) {
-                            if (await bcryptjs.compare(sPassword, oUser.password)) {
-                                let sToken = oTokenGenerator.generate();
-                                Model.updateToken(sEmail, sToken, (sMessageError = null) => {
-                                    if (sMessageError == null) {
-                                        oUser.remember_token = sToken;
-                                        delete oUser.password;
-                                        this.respond(oResponse, DONE, { message: 'Login correcto', data: oUser });
-                                    } else {
-                                        this.respond(oResponse, CONFLICT, null, sMessageError);
-                                    }
-                                });
-                            } else
-                                this.respond(oResponse, NOT_VALID, { message: 'Contraseña incorrecta' });
-                        } else
-                            this.respond(oResponse, NOT_FOUND, { message: 'Email incorrecto' });
-                    } else
-                        this.respond(oResponse, CONFLICT, null, oUser);
+            if (!sEmail || !sPassword)
+                return this.respond(oResponse, NOT_VALID, { message: 'Se necesitan credenciales válidas' });
+            Model.getByEmail(sEmail, async (oUser, bIsError = false) => {
+                if (bIsError)
+                    return this.respond(oResponse, CONFLICT, null, oUser);
+                if (!oUser || !(await bcryptjs.compare(sPassword, oUser.password)))
+                    return this.respond(oResponse, NOT_FOUND, { message: 'Credenciales incorrectas' });
+                let sToken = oTokenGenerator.generate();
+                Model.updateToken(sEmail, sToken, (sMessageError = null) => {
+                    if (sMessageError)
+                        return this.respond(oResponse, CONFLICT, null, sMessageError);
+                    oUser.remember_token = sToken;
+                    delete oUser.password;
+                    this.respond(oResponse, DONE, { message: 'Login correcto', data: oUser });
                 });
-            } else
-                this.respond(oResponse, NOT_VALID, { message: 'Se necesitan credenciales válidas' });
+            });
         } catch (oException) {
-            this.respond(oResponse, CONFLICT, null, oException.message);
+            return this.handleError(oResponse, oException);
         }
     }
     /**
-     * Funcion de login, se toman los datos del usuario, se comprueba que los mismos sean correctos y se genera una nueva api token.
+     * Función de login, se toman los datos del usuario, se comprueba que los mismos sean correctos y se genera una nueva api token.
      * 
      * @param {Request} oRequest Request de la peticion, aqui se reciben las credenciales del usuario
      * @param {Response} oResponse Este objeto maneja el response de la solicitud
@@ -68,23 +60,21 @@ var UserController = class UserController extends Controller {
     logout = async (oRequest, oResponse) => {
         try {
             let sToken = oRequest.headers.authorization;
-            if (sToken)
-                this.findByToken(sToken, (oUser = null, bIsError = false) => {
-                    if (!bIsError && oUser)
-                        Model.updateToken(oUser.email, null, (sMessageError = null) => {
-                            this.respond(oResponse, DONE, { message: 'El usuario cerro sesión correctamente' });
-                        })
-                    else
-                        this.respond(oResponse, DONE, { message: 'Autenticación no valida' });
+            if (!sToken)
+                return this.respond(oResponse, NOT_VALID, { message: 'No autorizado' })
+            this.findByToken(sToken, (oUser = null, bIsError = false) => {
+                if (bIsError || !oUser)
+                    return this.respond(oResponse, DONE, { message: 'Autenticación no valida' });
+                Model.updateToken(oUser.email, null, (sMessageError = null) => {
+                    this.respond(oResponse, DONE, { message: 'El usuario cerro sesión correctamente' });
                 });
-            else
-                this.respond(oResponse, NOT_VALID, { message: 'No autorizado' })
+            });
         } catch (oException) {
-            this.respond(oResponse, CONFLICT, null, oException.message);
+            return this.handleError(oResponse, oException);
         }
     }
     /**
-     * Funcion de logout, se obtiene el usuario y se eliminan las credenciales de acceso al sistema
+     * Función de logout, se obtiene el usuario y se eliminan las credenciales de acceso al sistema
      * 
      * @param {Request} oRequest Request de la peticion, aqui se reciben las credenciales del usuario
      * @param {Response} oResponse Este objeto maneja el response de la solicitud
@@ -93,30 +83,26 @@ var UserController = class UserController extends Controller {
      */
     checkToken = (oRequest, oResponse) => {
         try {
-            if (oRequest.oUser) {
-                this.findByToken(oRequest.oUser.remember_token, (oUser = null, bIsError = false) => {
-                    if (!bIsError && oUser) {
-                        let sToken = oTokenGenerator.generate();
-                        Model.updateToken(oRequest.oUser.email, sToken, (sMessageError = null) => {
-                            if (sMessageError == null) {
-                                oUser.remember_token = sToken;
-                                delete oUser.password;
-                                this.respond(oResponse, DONE, { message: 'Token actualizado', data: oUser });
-                            } else {
-                                this.respond(oResponse, CONFLICT, null, sMessageError);
-                            }
-                        });
-                    } else
-                        this.respond(oResponse, NOT_VALID, { message: 'Autenticación no valida', debug: oRequest.oUser });
+            if (!oRequest.oUser)
+                return this.respond(oResponse, NOT_VALID, { message: 'Autenticación no valida' });
+            this.findByToken(oRequest.oUser.remember_token, (oUser = null, bIsError = false) => {
+                if (bIsError || oUser)
+                    return this.respond(oResponse, NOT_VALID, { message: 'Autenticación no valida', debug: oRequest.oUser });
+                let sToken = oTokenGenerator.generate();
+                Model.updateToken(oRequest.oUser.email, sToken, (sMessageError = null) => {
+                    if (!sMessageError)
+                        return this.respond(oResponse, CONFLICT, null, sMessageError);
+                    oUser.remember_token = sToken;
+                    delete oUser.password;
+                    return this.respond(oResponse, DONE, { message: 'Token actualizado', data: oUser });
                 });
-            } else
-                this.respond(oResponse, NOT_VALID, { message: 'Autenticación no valida' });
+            });
         } catch (oException) {
-            this.respond(oResponse, CONFLICT, null, oException.message);
+            return this.handleError(oResponse, oException);
         }
     }
     /**
-     * Funcion encargada de buscar mediante el modelo al usuario en base a su token
+     * Función encargada de buscar mediante el modelo al usuario en base a su token
      * 
      * @author Leandro Curbelo
      */

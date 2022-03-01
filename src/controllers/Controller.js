@@ -39,7 +39,7 @@ var Controller = class Controller {
         oResponse.json(oData);
     }
     /**
-     * Funcion que retorna la ruta del archivo dependiendo del tipo de archivo que se recibe.
+     * Función que retorna la ruta del archivo dependiendo del tipo de archivo que se recibe.
      * 
      * @param {number} nType Representa el tipo de archivo que sera descargado
      * @param {Response} oResponse Este objeto maneja el response de la solicitud.
