@@ -1,4 +1,4 @@
-const { DONE, CONFLICT, NOT_VALID, NOT_FOUND, PERMISSIONS } = require('../constants/StatusCode');
+const { DONE, CONFLICT, NOT_VALID, NOT_FOUND } = require('../constants/StatusCode');
 const bcryptjs = require('bcryptjs');
 const User = require('../models/User');
 const Controller = require('../controllers/Controller');
